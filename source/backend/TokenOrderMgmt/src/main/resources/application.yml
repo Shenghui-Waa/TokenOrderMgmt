@@ -1,0 +1,27 @@
+server:
+  port: ${app.server-port:8080}
+
+spring:
+  application:
+    name: TokenOrderMgmt
+  config:
+    import: classpath:application-local.yml
+  datasource:
+    driver-class-name: ${db.driver:org.sqlite.JDBC}
+    url: jdbc:${db.type:sqlite}:${db.url:./data/token-order-mgmt.db}
+    username: ${db.username}
+    password: ${db.password}
+  sql:
+    init:
+      mode: always
+      schema-locations: ${db.init.schema-location}
+      data-locations: ${db.init.data-location}
+      continue-on-error: false
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: assign_uuid
