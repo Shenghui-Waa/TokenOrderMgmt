@@ -1,0 +1,15 @@
+db:
+  driver: org.sqlite.JDBC
+  type: sqlite
+  url: ./data/token-order-mgmt.db
+# MySQL/PostgreSQL/etc. which need login configure the following fields
+#  username:
+#  password:
+  init:
+    # 初始化建表语句存放路径
+    schema-location: classpath:schema.sql
+    # 初始化数据插入语句存放路径
+    data-location: classpath:data.sql
+
+app:
+  server-port: 8080
