@@ -15,7 +15,7 @@ spring:
     init:
       mode: always
       schema-locations: ${db.init.schema-location}
-      data-locations: ${db.init.data-location}
+#      data-locations: ${db.init.data-location}
       continue-on-error: false
 
 mybatis-plus:
