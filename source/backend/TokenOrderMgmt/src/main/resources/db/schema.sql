@@ -2,7 +2,7 @@
 PRAGMA foreign_keys = ON;
 
 -- 1. invoice_title 表
-CREATE TABLE "invoice_title" (
+CREATE TABLE IF NOT EXISTS "invoice_title" (
     "id"            TEXT PRIMARY KEY,
     "title_type"    TEXT,
     "name"          TEXT,
@@ -12,7 +12,7 @@ CREATE TABLE "invoice_title" (
 );
 
 -- 2. provider 表
-CREATE TABLE "provider" (
+CREATE TABLE IF NOT EXISTS "provider" (
     "id"         TEXT PRIMARY KEY,
     "name"       TEXT,
     "website"    TEXT,
@@ -21,7 +21,7 @@ CREATE TABLE "provider" (
 );
 
 -- 3. invoice 表，依赖 invoice_title
-CREATE TABLE "invoice" (
+CREATE TABLE IF NOT EXISTS "invoice" (
     "id"                TEXT PRIMARY KEY,
     "invoice_no"        TEXT,
     "total_amount_cent" INTEGER,
@@ -34,7 +34,7 @@ CREATE TABLE "invoice" (
 );
 
 -- 4. token_order 表，依赖 provider 和 invoice
-CREATE TABLE "token_order" (
+CREATE TABLE IF NOT EXISTS "token_order" (
     "id"             TEXT PRIMARY KEY,
     "order_no"       TEXT,
     "amount_cent"    INTEGER,
