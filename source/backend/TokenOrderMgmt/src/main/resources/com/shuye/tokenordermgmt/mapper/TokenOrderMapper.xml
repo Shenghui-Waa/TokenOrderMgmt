@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shuye.tokenordermgmt.mapper.TokenOrderMapper">
+
+    <select id="selectByIdsAndDeleted"
+            resultType="com.shuye.tokenordermgmt.common.entity.TokenOrderEntity">
+
+        select *
+        from token_order
+        where id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        <choose>
+            <when test="deleted != null and deleted == 0">
+                and deleted_at is null
+            </when>
+            <when test="deleted != null and deleted == 1">
+                and deleted_at is not null
+            </when>
+        </choose>
+
+    </select>
+
+</mapper>

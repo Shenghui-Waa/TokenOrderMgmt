@@ -2,6 +2,8 @@ package com.shuye.tokenordermgmt.common.vo;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class TokenOrderVO {
 
@@ -18,5 +20,7 @@ public class TokenOrderVO {
     private String invoiceType;
 
     private Integer deleted;
+
+    private LocalDateTime updatedAt;
 
 }

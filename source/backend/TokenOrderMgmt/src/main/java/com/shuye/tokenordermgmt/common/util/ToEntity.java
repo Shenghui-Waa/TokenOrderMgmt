@@ -2,9 +2,13 @@ package com.shuye.tokenordermgmt.common.util;
 
 import com.shuye.tokenordermgmt.common.dto.InvoiceTitleRequest;
 import com.shuye.tokenordermgmt.common.dto.ProviderRequest;
+import com.shuye.tokenordermgmt.common.dto.TokenOrderRequest;
 import com.shuye.tokenordermgmt.common.entity.InvoiceTitleEntity;
 import com.shuye.tokenordermgmt.common.entity.ProviderEntity;
+import com.shuye.tokenordermgmt.common.entity.TokenOrderEntity;
 import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
 
 @Component
 public class ToEntity {
@@ -21,6 +25,19 @@ public class ToEntity {
         entity.setTitleType(request.getTitleType());
         entity.setName(request.getName());
         entity.setTaxCode(request.getTaxCode());
+        return entity;
+    }
+
+    public static TokenOrderEntity toTokenOrderEntity(TokenOrderRequest request) {
+        TokenOrderEntity entity = new TokenOrderEntity();
+        entity.setOrderNo(request.getOrderNo());
+        entity.setAmountCent(
+                request.getAmount()
+                        .multiply(new BigDecimal(100))
+                        .longValue()
+        );
+        entity.setPaymentType(request.getPaymentType());
+        entity.setProviderId(request.getProviderId());
         return entity;
     }
 }
