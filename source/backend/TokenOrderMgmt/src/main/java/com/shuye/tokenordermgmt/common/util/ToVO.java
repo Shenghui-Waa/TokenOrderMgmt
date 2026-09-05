@@ -1,12 +1,17 @@
 package com.shuye.tokenordermgmt.common.util;
 
 import com.shuye.tokenordermgmt.common.constant.TokenOrderConstant;
+import com.shuye.tokenordermgmt.common.entity.InvoiceEntity;
 import com.shuye.tokenordermgmt.common.entity.InvoiceTitleEntity;
 import com.shuye.tokenordermgmt.common.entity.ProviderEntity;
 import com.shuye.tokenordermgmt.common.entity.TokenOrderEntity;
 import com.shuye.tokenordermgmt.common.vo.InvoiceTitleVO;
+import com.shuye.tokenordermgmt.common.vo.InvoiceVO;
 import com.shuye.tokenordermgmt.common.vo.ProviderVO;
 import com.shuye.tokenordermgmt.common.vo.TokenOrderVO;
+import com.shuye.tokenordermgmt.mapper.InvoiceMapper;
+import com.shuye.tokenordermgmt.mapper.InvoiceTitleMapper;
+import com.shuye.tokenordermgmt.mapper.ProviderMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -50,20 +55,37 @@ public class ToVO {
         vo.setAmountCent(tokenOrder.getAmountCent());
         vo.setPaymentType(tokenOrder.getPaymentType());
         vo.setProviderId(tokenOrder.getProviderId());
-
+        // provider name
         vo.setInvoiceId(tokenOrder.getInvoiceId());
         vo.setInvoiceStatus(
                 tokenOrder.getInvoiceId() == null
                         ? TokenOrderConstant.InvoiceStatus.UNINVOICED.toString()
                         : TokenOrderConstant.InvoiceStatus.INVOICED.toString()
         );
-
+        // invoice type
         vo.setDeleted(
                 tokenOrder.getDeletedAt() == null
                         ? TokenOrderConstant.DELETED_NO
                         : TokenOrderConstant.DELETED_YES
         );
+        vo.setUpdatedAt(tokenOrder.getUpdatedAt());
 
+        return vo;
+
+    }
+
+    public static InvoiceVO toInvoiceVO(InvoiceEntity item) {
+
+        InvoiceVO vo = new InvoiceVO();
+        vo.setId(item.getId());
+        vo.setInvoiceNo(item.getInvoiceNo());
+        vo.setTotalAmountCent(item.getTotalAmountCent());
+        vo.setInvoiceDate(item.getInvoiceDate());
+        // invoice type
+        vo.setInvoiceTitleId(item.getInvoiceTitleId());
+        // invoice title name
+        vo.setStatus(item.getStatus());
+        vo.setUpdatedAt(item.getUpdatedAt());
         return vo;
 
     }
@@ -92,4 +114,23 @@ public class ToVO {
 
     }
 
+    public static List<TokenOrderVO> toTokenOrderVOList(List<TokenOrderEntity> tokenOrder) {
+
+        List<TokenOrderVO> voList = new ArrayList<>();
+        tokenOrder.forEach(item -> {
+            voList.add(toTokenOrderVO(item));
+        });
+        return voList;
+
+    }
+
+    public static List<InvoiceVO> toInvoiceVOList(List<InvoiceEntity> invoice) {
+
+        List<InvoiceVO> voList = new ArrayList<>();
+        invoice.forEach(item -> {
+            voList.add(toInvoiceVO(item));
+        });
+        return voList;
+
+    }
 }
