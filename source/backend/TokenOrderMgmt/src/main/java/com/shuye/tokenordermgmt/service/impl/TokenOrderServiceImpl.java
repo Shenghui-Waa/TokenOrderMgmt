@@ -16,10 +16,12 @@ import com.shuye.tokenordermgmt.service.TokenOrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -81,6 +83,7 @@ public class TokenOrderServiceImpl implements TokenOrderService {
     }
 
     @Override
+    @Transactional(rollbackFor = BusinessException.class)
     public TokenOrderVO update(String id, TokenOrderRequest request) {
         log.info("[RUNNING][TokenOrderService.update]: Update Token Order...");
 
@@ -88,7 +91,17 @@ public class TokenOrderServiceImpl implements TokenOrderService {
         if (entity == null)
             throw new BusinessException(Result.Code.NOT_FOUND, "The token order does not exist");
         entity.setOrderNo(request.getOrderNo());
-        entity.setAmountCent(request.getAmount().multiply(new BigDecimal(100)).longValue());
+        if (entity.getInvoiceId() != null)
+            throw new BusinessException(Result.Code.FORBIDDEN, "The token order amount cannot be changed.");
+        try {
+            Long newAmountCent = request.getAmount()
+                    .movePointRight(2)
+                    .longValueExact();
+            if (!Objects.equals(entity.getAmountCent(), newAmountCent))
+                entity.setAmountCent(newAmountCent);
+        } catch (ArithmeticException e) {
+            throw new BusinessException(Result.Code.ERROR, "The amount is invalid.");
+        }
         entity.setPaymentType(request.getPaymentType());
         entity.setProviderId(request.getProviderId());
         tokenOrderMapper.updateById(entity);
@@ -98,11 +111,17 @@ public class TokenOrderServiceImpl implements TokenOrderService {
     }
 
     @Override
+    @Transactional(rollbackFor = BusinessException.class)
     public Void deleteLogic(BatchIdRequest request) {
         log.info("[RUNNING][TokenOrderService.deleteLogic]: Delete Token Orders Logically...");
 
         List<TokenOrderEntity> tokenOrder = tokenOrderMapper.selectByIdsAndDeleted(request.getIds(), TokenOrderConstant.DELETED_NO);
-        tokenOrder.forEach(item -> item.setDeletedAt(LocalDateTime.now()));
+
+        tokenOrder.forEach(item -> {
+            if (item.getInvoiceId() != null)
+                throw new BusinessException(Result.Code.FORBIDDEN, "The token order cannot be deleted.");
+            item.setDeletedAt(LocalDateTime.now());
+        });
         tokenOrderMapper.updateById(tokenOrder);
 
         log.info("[SUCCESS][TokenOrderService.deleteLogic]: Logically Deleted.");
@@ -113,18 +132,21 @@ public class TokenOrderServiceImpl implements TokenOrderService {
     public Void recover(BatchIdRequest request) {
         log.info("[RUNNING][TokenOrderService.recover]: Recover Token Orders...");
 
-        List<TokenOrderEntity> tokenOrder = tokenOrderMapper.selectByIdsAndDeleted(request.getIds(), TokenOrderConstant.DELETED_YES);
-        tokenOrder.forEach(item -> item.setDeletedAt(null));
-        tokenOrderMapper.updateById(tokenOrder);
+        tokenOrderMapper.recover(request.getIds(), LocalDateTime.now());
 
         log.info("[SUCCESS][TokenOrderService.recover]: Recovered.");
         return null;
     }
 
     @Override
+    @Transactional(rollbackFor = BusinessException.class)
     public Void deletePhysical(BatchIdRequest request) {
         log.info("[RUNNING][TokenOrderService.deletePhysical]: Delete Token Orders Physically...");
 
+        tokenOrderMapper.selectByIds(request.getIds()).forEach(item -> {
+            if (item.getInvoiceId() != null)
+                throw new BusinessException(Result.Code.FORBIDDEN, "The token order cannot be deleted.");
+        });
         tokenOrderMapper.deleteByIds(request.getIds());
 
         log.info("[SUCCESS][TokenOrderService.deletePhysical]: Physically Deleted.");

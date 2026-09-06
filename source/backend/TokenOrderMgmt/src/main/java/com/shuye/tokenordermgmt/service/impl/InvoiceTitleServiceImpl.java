@@ -3,6 +3,7 @@ package com.shuye.tokenordermgmt.service.impl;
 import com.shuye.tokenordermgmt.common.dto.BatchIdRequest;
 import com.shuye.tokenordermgmt.common.dto.InvoiceTitleRequest;
 import com.shuye.tokenordermgmt.common.dto.Result;
+import com.shuye.tokenordermgmt.common.entity.InvoiceEntity;
 import com.shuye.tokenordermgmt.common.entity.InvoiceTitleEntity;
 import com.shuye.tokenordermgmt.common.exception.BusinessException;
 import com.shuye.tokenordermgmt.common.util.ToEntity;
@@ -13,6 +14,7 @@ import com.shuye.tokenordermgmt.service.InvoiceTitleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -59,6 +61,7 @@ public class InvoiceTitleServiceImpl implements InvoiceTitleService {
     }
 
     @Override
+    @Transactional(rollbackFor = BusinessException.class)
     public InvoiceTitleVO update(String id, InvoiceTitleRequest request) {
         log.info("[RUNNING][InvoiceTitleService.update]: Invoice Title update...");
 
@@ -66,6 +69,11 @@ public class InvoiceTitleServiceImpl implements InvoiceTitleService {
         if (entity == null)
             throw new BusinessException(Result.Code.NOT_FOUND, "The invoice title does not exist");
         entity.setTitleType(request.getTitleType());
+        if (!request.getName().equals(entity.getName())) {
+            InvoiceTitleEntity test = invoiceTitleMapper.selectByName(request.getName());
+            if (test != null)
+                throw new BusinessException("The invoice title [" + request.getName() + "] already exists");
+        }
         entity.setName(request.getName());
         entity.setTaxCode(request.getTaxCode());
         invoiceTitleMapper.updateById(entity);

@@ -2,6 +2,8 @@ package com.shuye.tokenordermgmt.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.shuye.tokenordermgmt.common.entity.ProviderEntity;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;

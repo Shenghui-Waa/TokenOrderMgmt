@@ -13,6 +13,7 @@ import com.shuye.tokenordermgmt.service.ProviderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -46,6 +47,7 @@ public class ProviderServiceImpl implements ProviderService {
     }
 
     @Override
+    @Transactional(rollbackFor = BusinessException.class)
     public ProviderVO add(ProviderRequest request) {
         log.info("[RUNNING][ProviderService.add]: Provider add...");
 
@@ -59,12 +61,18 @@ public class ProviderServiceImpl implements ProviderService {
     }
 
     @Override
+    @Transactional(rollbackFor = BusinessException.class)
     public ProviderVO update(String id, ProviderRequest request) {
         log.info("[RUNNING][ProviderService.update]: Provider update...");
 
         ProviderEntity entity = providerMapper.selectById(id);
         if (entity == null)
             throw new BusinessException(Result.Code.NOT_FOUND, "The provider does not exist");
+        if (!request.getName().equals(entity.getName())) {
+            ProviderEntity test = providerMapper.selectByName(request.getName());
+            if (test != null)
+                throw new BusinessException("The provider [" + request.getName() + "] already exists");
+        }
         entity.setName(request.getName());
         entity.setWebsite(request.getWebsite());
         providerMapper.updateById(entity);
