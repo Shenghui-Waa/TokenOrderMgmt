@@ -5,6 +5,7 @@ import com.shuye.tokenordermgmt.common.dto.InvoiceTitleRequest;
 import com.shuye.tokenordermgmt.common.dto.ProviderRequest;
 import com.shuye.tokenordermgmt.common.dto.Result;
 import com.shuye.tokenordermgmt.service.InvoiceTitleService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +30,7 @@ public class InvoiceTitleController {
 
     @PostMapping
     public Result<?> add(
-            @RequestBody InvoiceTitleRequest request
+            @RequestBody @Valid InvoiceTitleRequest request
     ) {
         return Result.success(invoiceTitleService.add(request));
     }
@@ -37,14 +38,14 @@ public class InvoiceTitleController {
     @PutMapping("/{id}")
     public Result<?> update(
             @PathVariable String id,
-            @RequestBody InvoiceTitleRequest request
+            @RequestBody @Valid InvoiceTitleRequest request
     ) {
         return Result.success(invoiceTitleService.update(id, request));
     }
 
     @DeleteMapping
     public Result<?> delete(
-            @RequestBody BatchIdRequest request
+            @RequestBody @Valid BatchIdRequest request
     ) {
         return Result.success(invoiceTitleService.delete(request));
     }

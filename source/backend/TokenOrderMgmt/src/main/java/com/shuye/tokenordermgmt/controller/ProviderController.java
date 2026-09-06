@@ -4,6 +4,7 @@ import com.shuye.tokenordermgmt.common.dto.BatchIdRequest;
 import com.shuye.tokenordermgmt.common.dto.ProviderRequest;
 import com.shuye.tokenordermgmt.common.dto.Result;
 import com.shuye.tokenordermgmt.service.ProviderService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.ibatis.annotations.Delete;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class ProviderController {
 
     @PostMapping
     public Result<?> add(
-            @RequestBody ProviderRequest request
+            @RequestBody @Valid ProviderRequest request
     ) {
         return Result.success(providerService.add(request));
     }
@@ -37,14 +38,14 @@ public class ProviderController {
     @PutMapping("/{id}")
     public Result<?> update(
             @PathVariable String id,
-            @RequestBody ProviderRequest request
+            @RequestBody @Valid ProviderRequest request
     ) {
         return Result.success(providerService.update(id, request));
     }
 
     @DeleteMapping
     public Result<?> delete(
-            @RequestBody BatchIdRequest request
+            @RequestBody @Valid BatchIdRequest request
     ) {
         return Result.success(providerService.delete(request));
     }

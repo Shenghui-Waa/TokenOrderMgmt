@@ -24,4 +24,17 @@
 
     </select>
 
+    <update id="recover">
+
+        update token_order
+        set deleted_at = null,
+            updated_at = #{updatedAt}
+        where deleted_at is not null
+        and id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+
+    </update>
+
 </mapper>

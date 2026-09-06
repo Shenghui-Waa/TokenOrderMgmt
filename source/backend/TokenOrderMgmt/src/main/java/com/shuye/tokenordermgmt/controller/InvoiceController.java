@@ -1,9 +1,11 @@
 package com.shuye.tokenordermgmt.controller;
 
 import com.shuye.tokenordermgmt.common.dto.BatchIdRequest;
+import com.shuye.tokenordermgmt.common.dto.CreateInvoiceRequest;
 import com.shuye.tokenordermgmt.common.dto.InvoiceRequest;
 import com.shuye.tokenordermgmt.common.dto.Result;
 import com.shuye.tokenordermgmt.service.InvoiceService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,15 +30,15 @@ public class InvoiceController {
 
     /**
      *
-     * @param invoiceRequest 发票请求体
-     * @param batchIdRequest List of id of token order
+     * @param request
+     *      * invoiceRequest 发票请求体
+     *      * batchIdRequest List of id of token order
      */
     @PostMapping
     public Result<?> create(
-            @RequestBody InvoiceRequest invoiceRequest,
-            @RequestBody BatchIdRequest batchIdRequest
+            @RequestBody @Valid CreateInvoiceRequest request
     ) {
-        return Result.success(invoiceService.create(invoiceRequest, batchIdRequest));
+        return Result.success(invoiceService.create(request.getInvoiceRequest(), request.getBatchIdRequest()));
     }
 
     @PutMapping("/{id}")
