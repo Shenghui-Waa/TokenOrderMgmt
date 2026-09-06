@@ -1,8 +1,11 @@
 package com.shuye.tokenordermgmt.common.util;
 
+import com.shuye.tokenordermgmt.common.constant.InvoiceConstant;
+import com.shuye.tokenordermgmt.common.dto.InvoiceRequest;
 import com.shuye.tokenordermgmt.common.dto.InvoiceTitleRequest;
 import com.shuye.tokenordermgmt.common.dto.ProviderRequest;
 import com.shuye.tokenordermgmt.common.dto.TokenOrderRequest;
+import com.shuye.tokenordermgmt.common.entity.InvoiceEntity;
 import com.shuye.tokenordermgmt.common.entity.InvoiceTitleEntity;
 import com.shuye.tokenordermgmt.common.entity.ProviderEntity;
 import com.shuye.tokenordermgmt.common.entity.TokenOrderEntity;
@@ -38,6 +41,16 @@ public class ToEntity {
         );
         entity.setPaymentType(request.getPaymentType());
         entity.setProviderId(request.getProviderId());
+        return entity;
+    }
+
+    public static InvoiceEntity toInvoiceEntity(InvoiceRequest request) {
+        InvoiceEntity entity = new InvoiceEntity();
+        entity.setInvoiceNo(request.getInvoiceNo());
+        // total amount cent
+        entity.setInvoiceDate(request.getInvoiceDate());
+        entity.setInvoiceTitleId(request.getInvoiceTitleId());
+        entity.setStatus(InvoiceConstant.Status.VALID.toString());
         return entity;
     }
 }

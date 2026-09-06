@@ -3,6 +3,8 @@ package com.shuye.tokenordermgmt.common.dto;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 public class InvoiceRequest {
 
@@ -16,7 +18,7 @@ public class InvoiceRequest {
 
     @NotNull(message = "开票日期不能为空")
     @PastOrPresent(message = "开票日期不能晚于今天")
-    private String invoiceDate;
+    private LocalDate invoiceDate;
 
     @NotNull(message = "请选择发票抬头")
     private String invoiceTitleId;
