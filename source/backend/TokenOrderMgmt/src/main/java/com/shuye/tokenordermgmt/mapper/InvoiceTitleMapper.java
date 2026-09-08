@@ -21,7 +21,4 @@ public interface InvoiceTitleMapper extends BaseMapper<InvoiceTitleEntity> {
     @Select("select * from invoice_title where name = #{name}")
     InvoiceTitleEntity selectByName(@Param("name") String name);
 
-    @Select("select count(*) from invoice_title where name = #{name} and id != #{id}")
-    Integer selectByName(@Param("name") String name, @Param("id") String id);
-
 }
