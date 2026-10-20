@@ -8,6 +8,7 @@
 
 | 文档 | 内容 |
 | --- | --- |
+| [Go / Wails Windows 桌面重写版](source/goRedev/README.md) | Go 1.25、Wails v2、WebView2 与 SQLite 桌面版的架构、数据目录、构建和 ZIP 发布说明 |
 | [接口文档](docs/interface.md) | 22 个接口、请求响应、字段约束及后端核验记录 |
 | [设计说明](docs/design.md) | 架构、数据模型、页面交互、业务状态及实现边界 |
 | [页面原型](docs/prototype/index.html) | 使用模拟数据的可交互页面，下载仓库后可用浏览器打开 |
@@ -16,6 +17,10 @@
 正式前端位于 `source/frontend`，连接真实后端；原型仅用于设计参考。
 原型使用独立浏览器存储，正式前端不读取原型数据，也不在 localStorage 中保存业务记录。
 代码托管平台可能只展示 HTML 源码；页面原型需在本地浏览器打开。
+
+项目同时提供位于 `source/goRedev` 的 Windows 原生桌面重写版。该版本复用 React 界面，
+通过 Wails Bindings 调用 Go 业务层，并直接兼容现有 SQLite 数据库结构。具体使用、编译与
+发布方式请阅读 [Go / Wails Windows 桌面重写版说明](source/goRedev/README.md)。
 
 ## 功能概览
 
